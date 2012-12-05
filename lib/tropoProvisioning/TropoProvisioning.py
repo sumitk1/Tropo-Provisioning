@@ -681,9 +681,9 @@ class TropoProvisioning(object):
         """ 
         Delete Application
         
-        @param string: applicationId     The ID of the application which has to be deleted
+        @param applicationId     The ID of the application which has to be deleted
         
-        @return: string response         The response from the REST API call
+        @return: response         The response message
         """
                    
         self.preconditionCheck()
@@ -708,11 +708,11 @@ class TropoProvisioning(object):
         """ 
         Delete an address from the Application
         
-        @param string: applicationId     The ID of the application from which the address has to be deleted
-        @param string: addressType       The type of the address to be deleted
-        @param int: addressValue         The value of the address to be deleted
+        @param applicationId       The ID of the application from which the address has to be deleted
+        @param addressType         The type of the address to be deleted
+        @param addressValue        The value of the address to be deleted
         
-        @return: string response         The response from the REST API call
+        @return: response         The response message
         """
                    
         self.preconditionCheck()
@@ -737,7 +737,7 @@ class TropoProvisioning(object):
         """ 
         Get all the Application associated with the account
         
-        @return: string response         The response from the REST API call
+        @return: List response         The list of all the Applications with all their details.
         """
                  
         self.preconditionCheck()
@@ -764,9 +764,9 @@ class TropoProvisioning(object):
         """ 
         Get all the Application associated with the account
         
-        @param string: applicationId     The ID of the application 
+        @param applicationId      The ID of the application 
         
-        @return: string response         The response from the REST API call
+        @return: List response         The list of all the details for that application
         """
                    
         self.preconditionCheck()
@@ -786,23 +786,16 @@ class TropoProvisioning(object):
                 result = response[u'responseValue']
             return result
         else:        
-            return "Getting Application failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
-        
-        """if self.requestType == "JSON":
-            self.tropo_logger_inst.logger(DEBUG, "Response=%s" % json.dumps(response))
-            return json.dumps(response)
-        else:
-            self.tropo_logger_inst.logger(DEBUG, "Response=%s" % response)
-            return response"""        
+            return "Getting Application failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])     
         
         
     def get_application_addresses(self, applicationId):
         """ 
         Get all the Application's addresses associated with it
         
-        @param string: applicationId     The ID of the application 
+        @param applicationId           The ID of the application 
         
-        @return: string response         The response from the REST API call
+        @return: List response         The list of all the addresses associated with an application
         """
         
         self.preconditionCheck()
@@ -856,7 +849,7 @@ class TropoProvisioning(object):
         """ 
         Get all the exchanges associated with the account
         
-        @return: string response         The response from the REST API call
+        @return: List response         The list of all the exchanges
         """
                    
         self.preconditionCheck()
