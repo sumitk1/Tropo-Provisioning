@@ -16,24 +16,24 @@ def testCreateApplication(userName, password, url):
                     </application>"
     requestFormEncoded = "name=new+app123&voiceURL=http%3A%2F%2Fwebsite.com&messagingURL=http%3A%2F%2Fwebsite2.com&platform=scripting&partition=staging"
     
-    name = "new app1"
-    voiceUrl = "http://website1.com"
+    name = "new app2"
+    voiceUrl = "http://website2.com"
     messagingUrl = "http://website1.com"
     platform = "scripting"
     partition = "staging"
     
-    tropoTest = TropoProvisioning()
+    """tropoTest = TropoProvisioning()
     testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition)
     print "Resp = %s"% testResp
     
     name = "new app2"
     tropoTest = TropoProvisioning(requestType="XML")
     testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition)
-    print "Resp = %s"% testResp
+    print "Resp = %s"% testResp"""
     
     name = "new app3"
     tropoTest = TropoProvisioning(requestType="FORM-ENCODED")
-    tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition)
+    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, "XML")
     print "Resp = %s"% testResp
     
 

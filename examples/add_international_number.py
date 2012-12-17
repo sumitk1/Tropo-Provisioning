@@ -14,8 +14,7 @@ def testAddInternationalNumber(username, password, url):
     
     tropoTest = TropoProvisioning(requestType=data_format.XML)
     print tropoTest.add_international_number_from_pool(applicationId, prefix)    
-    
-    # It's always giving 400
+
     tropoTest = TropoProvisioning(requestType=data_format.FORM_ENCODED)
     print tropoTest.add_international_number_from_pool(applicationId, prefix)    
           

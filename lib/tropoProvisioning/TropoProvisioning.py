@@ -8,9 +8,7 @@ import TropoConnect
 import TropoException
 import data_format
 import json
-import logging
 import os
-import re
 import sys
 import urllib
 
@@ -32,11 +30,11 @@ class TropoProvisioning(object):
         1. Having no arguments in the constructor:
             tropoTest = TropoProvisioning()
         
-        2. Having variable no of named arguments in the constructor (in any order):
+        2. Having variable number of named arguments in the constructor (in any order):
             tropoTest = TropoProvisioning(userName="xxx", password="yyy")
             tropoTest = TropoProvisioning(userName="xxx", password="yyy", url="www")
             tropoTest = TropoProvisioning(url="www", userName="xxx", password="yyy",  requestType="type")
-            tropoTest = TropoProvisioning(url="www", postBody="body", requestType="type")
+            tropoTest = TropoProvisioning(url="www", requestType="type")
         
         The default values if not specified in the constructor will be taken from the config.cfg
         
@@ -63,11 +61,6 @@ class TropoProvisioning(object):
             self.url = config.get('tropo_api_config', 'url')
         else:
             self.url = kwargs.get('url')
-        
-        if(kwargs.get('postBody') is None):
-            self.postBody = ""
-        else:
-            self.postBody = kwargs.get('postBody')
         
         if(kwargs.get('requestType') is None):
             self.requestType = config.get('tropo_api_config', 'requestType')
@@ -98,19 +91,19 @@ class TropoProvisioning(object):
                 raise TropoException.UrlNotSetException("URL is not set")
         except TropoException.UserNameNotSetException, (instance):
             print "Exception Caught: " + instance.parameter
-            sys.exit(1)
+            raise instance
         except TropoException.PasswordNotSetException, (instance):
             print "Exception Caught: " + instance.parameter
-            sys.exit(1)
+            raise instance
         except TropoException.UrlNotSetException, (instance):
             print "Exception Caught: " + instance.parameter
-            sys.exit(1)
+            raise instance
 
     '''
     REST API for Session
     '''
 
-    def start_session(self, method, token=None, customerName=None, numberToDial=None, msg=None):
+    def start_session(self, method, token=None, customerName=None, numberToDial=None, msg=None, request_format=None):
         """ 
         Create a new Application
         
@@ -124,10 +117,11 @@ class TropoProvisioning(object):
         self.preconditionCheck()
         if(token is None):
             return "Token is not set."
-        
+        if(request_format is not None):
+            self.requestType = request_format
+            
         postBody = ""
         resource = "https://api.tropo.com/1.0/sessions"
-        # resource = "https://api.tropo.com/1.0/sessions?action=create&token=TOKEN&numberToDial=4075551212&customerName=John+Dyer&msg=the+sky+is+falling"
         
         if (method == "POST"):
             
@@ -152,8 +146,6 @@ class TropoProvisioning(object):
             if (response[u'responseCode'] == 200):
                 if(self.requestType == data_format.JSON):
                     result = response[u'responseValue']
-                    encoded_result = json.dumps(result)
-                    #return encoded_result      # returns a string
                     return result               # returns a list
                 else:
                     result = response[u'responseValue']
@@ -174,8 +166,6 @@ class TropoProvisioning(object):
             if (response[u'responseCode'] == 200):
                 if(self.requestType == data_format.JSON):
                     result = response[u'responseValue']
-                    encoded_result = json.dumps(result)
-                    #return encoded_result      # returns a string
                     return result               # returns a list
                 else:
                     result = response[u'responseValue']
@@ -184,7 +174,7 @@ class TropoProvisioning(object):
                 return "Starting Session failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
         
                
-    def start_session_webApi(self, method, token=None):
+    def start_session_webApi(self, method, token=None, request_format=None):
         """ 
         Create a new WebApi Session
         
@@ -195,7 +185,9 @@ class TropoProvisioning(object):
         self.preconditionCheck()
         if(token is None):
             return "Token is not set."
-        
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = "https://api.tropo.com/1.0/sessions"
         # resource = "https://api.tropo.com/1.0/sessions?action=create&token=TOKEN&numberToDial=4075551212&customerName=John+Dyer&msg=the+sky+is+falling"
         
@@ -222,8 +214,6 @@ class TropoProvisioning(object):
             if (response[u'responseCode'] == 200):
                 if(self.requestType == data_format.JSON):
                     result = response[u'responseValue']
-                    encoded_result = json.dumps(result)
-                    #return encoded_result      # returns a string
                     return result               # returns a list
                 else:
                     result = response[u'responseValue']
@@ -243,8 +233,6 @@ class TropoProvisioning(object):
             if (response[u'responseCode'] == 200):
                 if(self.requestType == data_format.JSON):
                     result = response[u'responseValue']
-                    encoded_result = json.dumps(result)
-                    #return encoded_result      # returns a string
                     return result               # returns a list
                 else:
                     result = response[u'responseValue']
@@ -256,7 +244,7 @@ class TropoProvisioning(object):
     '''
     REST API for Provisioning
     '''           
-    def create_application(self, name=None, voiceUrl=None, messagingUrl=None, platform=None, partition=None):
+    def create_application(self, name=None, voiceUrl=None, messagingUrl=None, platform=None, partition=None, request_format=None):
         """ 
         Create a new Application
         
@@ -269,10 +257,12 @@ class TropoProvisioning(object):
         @return: String application       The ID of the new application created if request-type is JSON. Full response with application url otherwise.
         """
         self.preconditionCheck()
-        resource = self.url + "applications"
         
         # if(name is None and voiceUrl is None and messagingUrl is None and platform is None and partition is None):
         #    return "Create Application failed as none of the field is set"
+        
+        if(request_format is not None):
+            self.requestType = request_format
         
         resource = self.url + "applications" 
         
@@ -282,7 +272,9 @@ class TropoProvisioning(object):
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
         
         elif self.requestType == data_format.XML:
+            print "here"
             postBody = "<application><name>%s</name><voiceurl>%s</voiceurl><messagingurl>%s</messagingurl><platform>%s</platform><partition>%s</partition></application>" % (name, voiceUrl, messagingUrl, platform, partition)
+            print postBody
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
                              
         elif self.requestType == data_format.FORM_ENCODED:
@@ -304,7 +296,7 @@ class TropoProvisioning(object):
             return "Create Application failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                
 
-    def add_single_number_from_pool(self, applicationId, prefix):
+    def add_single_number_from_pool(self, applicationId, prefix, request_format=None):
         """ 
         Add a number to the Application
         
@@ -315,6 +307,9 @@ class TropoProvisioning(object):
         """
         
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         
         if self.requestType == data_format.JSON:
@@ -344,7 +339,7 @@ class TropoProvisioning(object):
             return "Adding Number to an Account failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                
         
-    def add_multiple_numbers_from_pool(self, applicationId, prefix, count):
+    def add_multiple_numbers_from_pool(self, applicationId, prefix, count, request_format=None):
         """ 
         Add multiple numbers to the Application
         
@@ -356,6 +351,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         response = []
         if(count > 0):
             for i in range(count):
@@ -364,7 +362,7 @@ class TropoProvisioning(object):
         return response
     
 
-    def add_specific_number_from_pool(self, applicationId, number):
+    def add_specific_number_from_pool(self, applicationId, number, request_format=None):
         """ 
         Add a specific number to the Application
         
@@ -375,6 +373,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         
         if self.requestType == data_format.JSON:
@@ -405,7 +406,7 @@ class TropoProvisioning(object):
         
                 
 
-    def add_tollFree_number(self, applicationId, prefix):
+    def add_tollFree_number(self, applicationId, prefix, request_format=None):
         """ 
         Add a toll-free number to the Application
         
@@ -416,6 +417,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         
         if self.requestType == data_format.JSON:
@@ -445,7 +449,7 @@ class TropoProvisioning(object):
             return "Adding Toll Free Number to an Account failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                
 
-    def add_international_number_from_pool(self, applicationId, prefix):
+    def add_international_number_from_pool(self, applicationId, prefix, request_format=None):
         """ 
         Add an international number to the Application
         
@@ -456,6 +460,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         
         if self.requestType == data_format.JSON:
@@ -486,7 +493,7 @@ class TropoProvisioning(object):
             return "Adding International Number failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                    
 
-    def add_IM_account(self, applicationId, accountType, username, password):
+    def add_IM_account(self, applicationId, accountType, username, password, request_format=None):
         """ 
         Add an IM account (Gmail / AIM / Yahoo etc) to the Application
         
@@ -499,6 +506,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         
         if self.requestType == data_format.JSON:
@@ -528,7 +538,7 @@ class TropoProvisioning(object):
             return "Add IM Account failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
         
 
-    def add_voice_token(self, applicationId, field_type, field_channel):
+    def add_voice_token(self, applicationId, field_type, field_channel, request_format=None):
         """ 
         Add a voice token to the Application
         
@@ -540,6 +550,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         
         if self.requestType == data_format.JSON:
@@ -569,7 +582,7 @@ class TropoProvisioning(object):
             return "Adding Voice Token failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
         
 
-    def add_voice_messaging_url(self, applicationId, voiceUrl=None, messagingUrl=None):
+    def add_voice_messaging_url(self, applicationId, voiceUrl=None, messagingUrl=None, request_format=None):
         """ 
         Add a voice and message URL to the Application
         
@@ -581,6 +594,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         if(voiceUrl is None and messagingUrl is None):
             return "Adding Voice & Messaging URLs failed as there is nothing to add"
         
@@ -631,7 +647,7 @@ class TropoProvisioning(object):
             return "Adding Voice & Messaging URLs failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
         
 
-    def update_application(self, applicationId, name=None, platform=None, partition=None):
+    def update_application(self, applicationId, name=None, platform=None, partition=None, request_format=None):
         """ 
         Update the Application
         
@@ -644,6 +660,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         if(name is None and platform is None and partition is None):
             return "At least one of the parameter (name, platform, partition) needs to be set."
         
@@ -677,7 +696,7 @@ class TropoProvisioning(object):
             return "Update Application failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                        
 
-    def delete_application(self, applicationID):
+    def delete_application(self, applicationID, request_format=None):
         """ 
         Delete Application
         
@@ -687,6 +706,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationID
         response = TropoConnect.doDELETE(self.userName, self.password, resource, self.requestType)
         
@@ -704,7 +726,7 @@ class TropoProvisioning(object):
         
        
         
-    def delete_address(self, applicationID, addressType, addressValue):
+    def delete_address(self, applicationID, addressType, addressValue, request_format=None):
         """ 
         Delete an address from the Application
         
@@ -716,8 +738,10 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationID + "/addresses/" + addressType + "/" + addressValue
-        #print resource
         response = TropoConnect.doDELETE(self.userName, self.password, resource, self.requestType)
         
         self.tropo_logger_inst.logger(DEBUG, "ResponseCode = %s" % response[u'responseCode'])
@@ -733,7 +757,7 @@ class TropoProvisioning(object):
             return "Delete Address failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                 
 
-    def get_all_applications(self):
+    def get_all_applications(self, request_format=None):
         """ 
         Get all the Application associated with the account
         
@@ -741,6 +765,9 @@ class TropoProvisioning(object):
         """
                  
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications"
         response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
         
@@ -750,8 +777,6 @@ class TropoProvisioning(object):
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
                 result = response[u'responseValue']
-                encoded_result = json.dumps(result)
-                #return encoded_result      # returns a string
                 return result               # returns a list
             else:
                 result = response[u'responseValue']
@@ -760,7 +785,7 @@ class TropoProvisioning(object):
             return "Getting All Applications failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                        
         
-    def get_application(self, applicationId):
+    def get_application(self, applicationId, request_format=None):
         """ 
         Get all the Application associated with the account
         
@@ -770,6 +795,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId
         response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
         
@@ -779,8 +807,6 @@ class TropoProvisioning(object):
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
                 result = response[u'responseValue']
-                encoded_result = json.dumps(result)
-                #return encoded_result      # returns a string
                 return result               # returns a list
             else:
                 result = response[u'responseValue']
@@ -789,7 +815,7 @@ class TropoProvisioning(object):
             return "Getting Application failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])     
         
         
-    def get_application_addresses(self, applicationId):
+    def get_application_addresses(self, applicationId, request_format=None):
         """ 
         Get all the Application's addresses associated with it
         
@@ -799,6 +825,9 @@ class TropoProvisioning(object):
         """
         
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "applications/" + applicationId + "/addresses"
         response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
         
@@ -808,8 +837,6 @@ class TropoProvisioning(object):
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
                 result = response[u'responseValue']
-                encoded_result = json.dumps(result)
-                #return encoded_result      # returns a string
                 return result               # returns a list
             else:
                 result = response[u'responseValue']
@@ -818,7 +845,7 @@ class TropoProvisioning(object):
             return "Getting Application Addresses failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                 
 
-    def get_all_addresses_for_account(self):
+    def get_all_addresses_for_account(self, request_format=None):
         """
         Get all the addresses associated with the account
         
@@ -826,6 +853,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "addresses"
         response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
         
@@ -835,8 +865,6 @@ class TropoProvisioning(object):
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
                 result = response[u'responseValue']
-                encoded_result = json.dumps(result)
-                #return encoded_result      # returns a string
                 return result               # returns a list
             else:
                 result = response[u'responseValue']
@@ -845,7 +873,7 @@ class TropoProvisioning(object):
             return "Getting All Addresses failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
                 
 
-    def get_all_available_exchanges_for_account(self):
+    def get_all_available_exchanges_for_account(self, request_format=None):
         """ 
         Get all the exchanges associated with the account
         
@@ -853,6 +881,9 @@ class TropoProvisioning(object):
         """
                    
         self.preconditionCheck()
+        if(request_format is not None):
+            self.requestType = request_format
+            
         resource = self.url + "exchanges"
         response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
         
@@ -862,8 +893,6 @@ class TropoProvisioning(object):
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
                 result = response[u'responseValue']
-                encoded_result = json.dumps(result)
-                #return encoded_result      # returns a string
                 return result               # returns a list
             else:
                 result = response[u'responseValue']
@@ -872,7 +901,7 @@ class TropoProvisioning(object):
             return "Getting All Available Exchanges failed with the following reason: (Error Code = %s) (Error msg = %s)" % (response[u'responseCode'], response[u'responseValue'])
         
         
-    def get_all_available_prefixes_for_account(self, prefix):
+    def get_all_available_prefixes_for_account(self, prefix, request_format=None):
         """ 
         Get all the available prefixes for the account
         
@@ -883,6 +912,8 @@ class TropoProvisioning(object):
         
         if(prefix is None):
             return "Prefix is not set. Please set it and try again!"
+        if(request_format is not None):
+            self.requestType = request_format
         
         resource = self.url + "addresses?available&prefix=" + prefix
         response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
@@ -893,8 +924,6 @@ class TropoProvisioning(object):
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
                 result = response[u'responseValue']
-                encoded_result = json.dumps(result)
-                #return encoded_result      # returns a string
                 return result               # returns a list
             else:
                 result = response[u'responseValue']
