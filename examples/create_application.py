@@ -6,16 +6,6 @@ from TropoProvisioning import TropoProvisioning
 
 def testCreateApplication(userName, password, url):
     
-    requestBody = { "name":"sumitk1", "voiceUrl":"http://website.com", "messagingUrl":"http://website2.com", "platform":"scripting", "partition":"staging" }
-    requestXML =   "<application>\
-                        <name>new app</name>\
-                        <voiceurl>http://website.com</voiceurl>\
-                        <messagingurl>http://website2.com</messagingurl>\
-                        <platform>scripting</platform>\
-                        <partition>staging</partition>\
-                    </application>"
-    requestFormEncoded = "name=new+app123&voiceURL=http%3A%2F%2Fwebsite.com&messagingURL=http%3A%2F%2Fwebsite2.com&platform=scripting&partition=staging"
-    
     name = "new app2"
     voiceUrl = "http://website2.com"
     messagingUrl = "http://website1.com"

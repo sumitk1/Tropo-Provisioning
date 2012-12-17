@@ -12,15 +12,15 @@ import data_format
 class TropoTest(unittest.TestCase):
 
     # Use your credentials 
-    def setUp(self):
-        URL = 'https://api.tropo.com/v1/applications'
-        USER_NAME = 'sumitk85'
-        PASSWORD = 'qazwsx123'  
-        POST_VAL = {"name":"sumitk5", 
-              "voiceUrl":"http://website.com", 
-              "messagingUrl":"http://website2.com",
-              "platform":"scripting", 
-              "partition":"staging"}
+
+    URL = 'https://api.tropo.com/v1/applications'
+    USER_NAME = 'sumitk85'
+    PASSWORD = 'qazwsx123'  
+    POST_VAL = {"name":"sumitk5", 
+          "voiceUrl":"http://website.com", 
+          "messagingUrl":"http://website2.com",
+          "platform":"scripting", 
+          "partition":"staging"}
             
     def testCreateApplication(self):
         name = "new app1"
