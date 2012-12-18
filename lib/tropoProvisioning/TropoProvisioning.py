@@ -45,10 +45,10 @@ class TropoProvisioning(object):
         config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.cfg')
         config.read(config_path)
         
-        if(kwargs.get('userName') is None):
-            self.userName = config.get('tropo_api_config', 'userName')
+        if(kwargs.get('username') is None):
+            self.userName = config.get('tropo_api_config', 'username')
         else:
-            self.userName = kwargs.get('userName')
+            self.userName = kwargs.get('username')
         
         if(kwargs.get('password') is None):
             self.password = config.get('tropo_api_config', 'password')
