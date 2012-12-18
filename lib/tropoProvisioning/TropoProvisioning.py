@@ -747,7 +747,7 @@ class TropoProvisioning(object):
         
         if (response[u'responseCode'] == 200):
             if(self.requestType == data_format.JSON):
-                result = response[u'responseValue'][u'message']
+                result = response[u'responseValue']
             else:
                 result = response[u'responseValue']
             return result

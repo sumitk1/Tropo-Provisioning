@@ -22,7 +22,7 @@ class TropoTest(unittest.TestCase):
           "platform":"scripting", 
           "partition":"staging"}
             
-    def test_CreateApplication_successful(self):
+    """def test_CreateApplication_successful(self):
         name = "new app1"
         voiceUrl = "http://website1.com"
         messagingUrl = "http://website1.com"
@@ -44,7 +44,7 @@ class TropoTest(unittest.TestCase):
         
         tropoTest = TropoProvisioning()
         testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, "data_format.JSON")
-        print "Resp = %s"% testResp
+        print "Response = %s"% testResp
         result = testResp.find("failed")
         self.assertNotEqual(result, -1)
 
@@ -54,47 +54,76 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning()
         response = tropoTest.add_international_number_from_pool(applicationId, prefix, data_format.JSON)    
         print "Response = %s"% response
+        result = response.find("+31")
+        self.assertNotEqual(result, -1)
         
+    def test_AddNumberFromPool(self):
+        applicationId = "430603"
+        prefix = 1407
+        tropoTest = TropoProvisioning()
+        response = tropoTest.add_single_number_from_pool(applicationId, prefix, data_format.JSON)
+        print "Response = %s"% response
+        result = response.find("+1407")
+        self.assertNotEqual(result, -1)
         
-            
-"""    def testAddNumberFromPool(self):
-        requestBody = {"type":"number", "prefix":"1407"}
-        applicationId = "422451"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_single_number_from_pool(requestBody, applicationId)
-
     def testAddMultipleNumbersFromPool(self):
-        requestBody = {"type":"number", "prefix":"1407"}
-        applicationId = "422451"
-        count = 5
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_multiple_numbers_from_pool(requestBody, applicationId, count)
-
-    def testAddSpecificNumber(self):
-        requestBody = {"type":"number", "number":"4077969880"}
-        applicationId = "422446"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_specific_number_from_pool(requestBody, applicationId)
-
-    def testAddTollFreeNumber(self):
-        requestBody = {"type":"number", "prefix":"1866"} # Need to have production account to test
-        applicationId = "422446"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_tollFree_number(requestBody, applicationId)
-
-
-
-    def testAddVoiceToken(self):
-        requestBody = { "type":"token", "channel":"voice"}
-        applicationId = "422445"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_voice_token(requestBody, applicationId)
-
-    def testAddVoiceMessagingURL(self):
-        requestBody = { "name":"new app", "voiceUrl":"http://website1.com", "messagingUrl":"http://website2.com", "platform":"scripting", "partition":"staging"}
-        applicationId = "422445"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_voice_messaging_url(requestBody, applicationId)
+        applicationId = "430603"
+        prefix = 1407
+        count = 2
+        tropoTest = TropoProvisioning()
+        response = tropoTest.add_multiple_numbers_from_pool(applicationId, prefix, count, data_format.JSON)
+        print response 
+        result = response[0].find("+1407")
+        self.assertNotEqual(result, -1)
+        
+    def test_AddSpecificNumberFromPool(self):
+        applicationId = "430603"
+        number = "4077969837"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.add_specific_number_from_pool(applicationId, number, data_format.JSON)
+        print response 
+        result = response.find("+14077969837")
+        self.assertEqual(response, "+14077969837")
+     
+    def test_AddTollFreeNumber(self):
+        applicationId = "430603"
+        prefix = "1866"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.add_tollFree_number(applicationId, prefix, data_format.JSON)    
+        print "Response = %s"% response
+        result = response.find("+1866")
+        self.assertNotEqual(result, -1)    
+   
+    def test_AddVoiceMessagingURL(self):
+        applicationId = "430603"
+        voiceUrl = "http://website1.com"
+        messagingUrl = "http://website1.com"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.add_voice_messaging_url(applicationId, voiceUrl, messagingUrl, data_format.JSON)
+        print "Response = %s"% response
+        self.assertEqual(response, "430603")"""
+        
+    def test_DeleteAddress_successful(self):
+        applicationId = "430603"
+        addressType = "number"
+        addressValue = "+14076800746"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.delete_address(applicationId, addressType, addressValue, data_format.JSON)    
+        print response
+        result = {"message": "delete successful"}
+        self.assertEqual(response, result)
+        
+    def test_DeleteAddress_failed(self):
+        applicationId = "430603"
+        addressType = "number"
+        addressValue = "+14074873572"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.delete_address(applicationId, addressType, addressValue, data_format.JSON)    
+        print response
+        result = response.find("failed")
+        self.assertNotEqual(result, -1)
+        
+"""    
 
     def testUpdateApplication(self):
         requestBody = { "name":"new app updated22", "platform":"webapi", "partition":"production" }
@@ -106,9 +135,6 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
         tropoTest.delete_application("422446")
         
-    def testDeleteAddress(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.delete_address("422451", "number", "+14077969905")
         
     def testGetAllApplications(self):
         tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)

@@ -9,8 +9,8 @@ import data_format
 def testAddInternationalNumber(username, password, url):
     applicationId = "427279"
     prefix = 31
-    tropoTest = TropoProvisioning(requestType=data_format.JSON)
-    print tropoTest.add_international_number_from_pool(applicationId, prefix)    
+    tropoTest = TropoProvisioning()
+    print tropoTest.add_international_number_from_pool(applicationId, prefix, data_format.JSON)    
     
     tropoTest = TropoProvisioning(requestType=data_format.XML)
     print tropoTest.add_international_number_from_pool(applicationId, prefix)    

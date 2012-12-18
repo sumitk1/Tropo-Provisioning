@@ -3,6 +3,7 @@ This is an example script which shows how to use the Tropo Python REST API
 '''
 from ConfigParser import SafeConfigParser
 from TropoProvisioning import TropoProvisioning
+import data_format
 
 
 def testAddTollFreeNumber(username, password, url):
@@ -12,15 +13,15 @@ def testAddTollFreeNumber(username, password, url):
     applicationId = "427278"
     prefix = "1866"
     tropoTest = TropoProvisioning()
-    print tropoTest.add_tollFree_number(applicationId, prefix)
+    print tropoTest.add_tollFree_number(applicationId, prefix, data_format.JSON)
     
     prefix = "1866"
-    tropoTest = TropoProvisioning(requestType="XML")
-    print tropoTest.add_tollFree_number(applicationId, prefix)
+    tropoTest = TropoProvisioning()
+    print tropoTest.add_tollFree_number(applicationId, prefix, data_format.XML)
     
     prefix = "1866"
-    tropoTest = TropoProvisioning(requestType="FORM-ENCODED")
-    print tropoTest.add_tollFree_number(applicationId, prefix)
+    tropoTest = TropoProvisioning()
+    print tropoTest.add_tollFree_number(applicationId, prefix, data_format.FORM_ENCODED)
           
 def main():
     parser = SafeConfigParser()

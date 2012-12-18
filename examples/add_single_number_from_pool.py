@@ -3,20 +3,20 @@ This is an example script which shows how to use the Tropo Python REST API
 '''
 from ConfigParser import SafeConfigParser
 from TropoProvisioning import TropoProvisioning
+import data_format
 
 
 def testAddNumberFromPool(username, password, url):
-        requestBody = {"type":"number", "prefix":"1407"}
         applicationId = "427278"
         prefix = 1407
         tropoTest = TropoProvisioning()
-        print tropoTest.add_single_number_from_pool(applicationId, prefix)
+        print tropoTest.add_single_number_from_pool(applicationId, prefix, data_format.JSON)
         
-        tropoTest = TropoProvisioning(requestType="XML")
-        print tropoTest.add_single_number_from_pool(applicationId, prefix)
+        tropoTest = TropoProvisioning()
+        print tropoTest.add_single_number_from_pool(applicationId, prefix, data_format.XML)
         
         tropoTest = TropoProvisioning(requestType="FORM-ENCODED")
-        print tropoTest.add_single_number_from_pool(applicationId, prefix)
+        print tropoTest.add_single_number_from_pool(applicationId, prefix, data_format.FORM_ENCODED)
         
 
 def main():

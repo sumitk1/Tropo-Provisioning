@@ -3,6 +3,7 @@ This is an example script which shows how to use the Tropo Python REST API
 '''
 from ConfigParser import SafeConfigParser
 from TropoProvisioning import TropoProvisioning
+import data_format
 
   
 def testAddVoiceToken(username, password, url):
@@ -12,13 +13,13 @@ def testAddVoiceToken(username, password, url):
     field_channel = "voice"
     
     tropoTest = TropoProvisioning()
-    print tropoTest.add_voice_token(applicationId, field_type, field_channel)
+    print tropoTest.add_voice_token(applicationId, field_type, field_channel, data_format.JSON)
     
     tropoTest = TropoProvisioning(requestType="XML")
-    print tropoTest.add_voice_token(applicationId, field_type, field_channel)
+    print tropoTest.add_voice_token(applicationId, field_type, field_channel, data_format.XML)
     
     tropoTest = TropoProvisioning(requestType="FORM-ENCODED")
-    print tropoTest.add_voice_token(applicationId, field_type, field_channel)
+    print tropoTest.add_voice_token(applicationId, field_type, field_channel, data_format.FORM_ENCODED)
     
 def main():
     parser = SafeConfigParser()
