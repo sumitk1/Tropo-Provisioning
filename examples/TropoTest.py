@@ -82,7 +82,6 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning()
         response = tropoTest.add_specific_number_from_pool(applicationId, number, data_format.JSON)
         print response 
-        result = response.find("+14077969837")
         self.assertEqual(response, "+14077969837")
      
     def test_AddTollFreeNumber(self):
@@ -110,7 +109,7 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning()
         response = tropoTest.delete_address(applicationId, addressType, addressValue, data_format.JSON)    
         print response
-        result = {"message": "delete successful"}
+        result = "delete successful"
         self.assertEqual(response, result)
         
     def test_DeleteAddress_failed(self):
@@ -122,43 +121,32 @@ class TropoTest(unittest.TestCase):
         print response
         result = response.find("failed")
         self.assertNotEqual(result, -1)
-        
-"""    
 
-    def testUpdateApplication(self):
-        requestBody = { "name":"new app updated22", "platform":"webapi", "partition":"production" }
-        applicationId = "422445"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.update_application(requestBody, applicationId)
 
-    def testDeleteApplication(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.delete_application("422446")
-        
-        
-    def testGetAllApplications(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.get_all_applications()
-        
-    def testGetApplication(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.get_application('422451')
+    def test_DeleteApplication_successful(self):
+        applicationId = "430678"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.delete_application(applicationId, data_format.JSON)
+        print response
+        result = "delete successful"
+        self.assertEqual(response, result)
 
-    def testGetApplicationAddresses(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.get_application_addresses('422451')
-
-    def testGetAllAddressesForAccount(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.get_all_addresses_for_account()
-
-    def testGetAllAvailableExchangesForAccount(self):
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.get_all_available_exchanges_for_account()
-
-    def testGetAllAvailablePrefixesForAccount(self):
-        prefix = "9723"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.get_all_available_prefixes_for_account(prefix)
-"""
+    def test_DeleteApplication_failed(self):
+        applicationId = "43067112"
+        tropoTest = TropoProvisioning()
+        response = tropoTest.delete_application(applicationId, data_format.JSON)
+        print response
+        result = response.find("failed")
+        self.assertNotEqual(result, -1)
+   
+    def test_UpdateApplication(self):
+        applicationId = "430603"
+        name = "new app updated11"
+        platform = "webapi"
+        partition = "staging"
+    
+        tropoTest = TropoProvisioning()
+        response = tropoTest.update_application(applicationId, name, platform, partition, data_format.JSON)     
+        print response
+        self.assertEqual(response, "430603")
 

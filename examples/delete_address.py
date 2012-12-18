@@ -3,6 +3,7 @@ This is an example script which shows how to use the Tropo Python REST API
 '''
 from ConfigParser import SafeConfigParser
 from TropoProvisioning import TropoProvisioning
+import data_format
 
 
 def testDeleteAddress(username, password, url):
@@ -10,7 +11,7 @@ def testDeleteAddress(username, password, url):
     addressType = "number"
     addressValue = "+14077969891"
     tropoTest = TropoProvisioning()
-    print tropoTest.delete_address(applicationId, addressType, addressValue)
+    print tropoTest.delete_address(applicationId, addressType, addressValue, data_format.JSON)
         
 def main():
     parser = SafeConfigParser()

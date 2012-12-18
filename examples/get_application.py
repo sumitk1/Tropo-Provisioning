@@ -3,12 +3,13 @@ This is an example script which shows how to use the Tropo Python REST API
 '''
 from ConfigParser import SafeConfigParser
 from TropoProvisioning import TropoProvisioning
+import data_format
 
 
 def testGetApplication(username, password, url):
-    applicationId = "427278"
+    applicationId = "430603"
     tropoTest = TropoProvisioning(username=username, password=password, url=url, requestType="JSON")
-    print type(tropoTest.get_application(applicationId))
+    print tropoTest.get_application(applicationId, data_format.JSON)
                 
 def main():
     parser = SafeConfigParser()

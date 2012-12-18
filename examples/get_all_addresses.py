@@ -7,7 +7,6 @@ from TropoProvisioning import TropoProvisioning
 
 def testGetAllAddressesForAccount(username, password, url):
     tropoTest = TropoProvisioning(username=username, password=password)
-    print "---"
     print tropoTest.get_all_addresses_for_account()                    
 
 def main():
