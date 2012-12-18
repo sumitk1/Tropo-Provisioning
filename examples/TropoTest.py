@@ -22,7 +22,7 @@ class TropoTest(unittest.TestCase):
           "platform":"scripting", 
           "partition":"staging"}
             
-    """def test_CreateApplication_successful(self):
+    def test_CreateApplication_successful(self):
         name = "new app1"
         voiceUrl = "http://website1.com"
         messagingUrl = "http://website1.com"
@@ -101,7 +101,7 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning()
         response = tropoTest.add_voice_messaging_url(applicationId, voiceUrl, messagingUrl, data_format.JSON)
         print "Response = %s"% response
-        self.assertEqual(response, "430603")"""
+        self.assertEqual(response, "430603")
         
     def test_DeleteAddress_successful(self):
         applicationId = "430603"
@@ -161,29 +161,4 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
         tropoTest.get_all_available_prefixes_for_account(prefix)
 """
-"""
-Sample usage
-
-tropoClientConnect = TropoTest()
-tropoClientConnect.testCreateApplication() 
-tropoClientConnect.testGetAllApplications()
-tropoClientConnect.testGetApplication()
-tropoClientConnect.testAddNumberFromPool()
-tropoClientConnect.testAddMultipleNumbersFromPool()
-tropoClientConnect.testAddSpecificNumber()
-tropoClientConnect.testAddTollFreeNumber()
-tropoClientConnect.testAddInternationalNumber()
-tropoClientConnect.testAddIMAccount()
-tropoClientConnect.testAddVoiceToken()
-tropoClientConnect.testAddVoiceMessagingURL()
-tropoClientConnect.testUpdateApplication()
-tropoClientConnect.testDeleteApplication()
-tropoClientConnect.testDeleteAddress()
-tropoClientConnect.testGetApplicationAddresses()
-tropoClientConnect.testGetAllAddressesForAccount()
-tropoClientConnect.testGetAllAvailableExchangesForAccount()
-tropoClientConnect.testGetAllAvailablePrefixesForAccount()
-
-"""
-
 
