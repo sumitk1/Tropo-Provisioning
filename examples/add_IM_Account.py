@@ -6,8 +6,7 @@ from TropoProvisioning import TropoProvisioning
 import data_format
           
 def testAddIMAccount(username, password, url):
-    '''Not working. Getting 400 from Tropo. 
-       Need to enter a valid IM username and password.
+    '''Need to enter a valid IM username and password.
        IM application (gtalk, aim, yahoo etc) needs to give access to Tropo.
     '''
     
@@ -16,7 +15,7 @@ def testAddIMAccount(username, password, url):
     accountType = "yahoo"
     username = ""
     password = ""
-    print tropoTest.add_IM_account(applicationId, accountType, username, password)
+    print tropoTest.add_IM_account(applicationId, accountType, username, password, data_format.JSON)
 
 def main():
     parser = SafeConfigParser()

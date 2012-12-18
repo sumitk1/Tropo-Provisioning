@@ -47,10 +47,8 @@ class TropoProvisioning(object):
         
         if(kwargs.get('userName') is None):
             self.userName = config.get('tropo_api_config', 'userName')
-            # print "---"+self.userName 
         else:
             self.userName = kwargs.get('userName')
-            # print "__"+self.userName 
         
         if(kwargs.get('password') is None):
             self.password = config.get('tropo_api_config', 'password')
@@ -281,7 +279,7 @@ class TropoProvisioning(object):
             postBody = "name=%s&voiceURL=%s&messagingURL=%s&platform=%s&partition=%s" % (name, voiceUrl, messagingUrl, platform, partition)
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
         else:
-            return "Bad request type."
+            return "Create Application failed."
         
         self.tropo_logger_inst.logger(DEBUG, "ResponseCode = %s" % response[u'responseCode'])
         self.tropo_logger_inst.logger(DEBUG, "ResponseValue = %s" % response[u'responseValue'])   
@@ -324,7 +322,7 @@ class TropoProvisioning(object):
             postBody = "type=number&prefix=%s" % (prefix) 
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
         else:
-            return "Bad request type."
+            return "Adding Number to an Account failed."
         
         self.tropo_logger_inst.logger(DEBUG, "ResponseCode = %s" % response[u'responseCode'])
         self.tropo_logger_inst.logger(DEBUG, "ResponseValue = %s" % response[u'responseValue'])   
@@ -357,7 +355,7 @@ class TropoProvisioning(object):
         response = []
         if(count > 0):
             for i in range(count):
-                response.append(self.add_single_number_from_pool(applicationId, prefix))
+                response.append(self.add_single_number_from_pool(applicationId, prefix, self.requestType))
         
         return response
     

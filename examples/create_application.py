@@ -3,6 +3,7 @@ This is an example script which shows how to use the Tropo Python REST API
 '''
 from ConfigParser import SafeConfigParser
 from TropoProvisioning import TropoProvisioning
+import data_format
 
 def testCreateApplication(userName, password, url):
     
@@ -12,18 +13,18 @@ def testCreateApplication(userName, password, url):
     platform = "scripting"
     partition = "staging"
     
-    """tropoTest = TropoProvisioning()
-    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition)
+    tropoTest = TropoProvisioning()
+    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, data_format.JSON)
     print "Resp = %s"% testResp
     
     name = "new app2"
     tropoTest = TropoProvisioning(requestType="XML")
-    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition)
-    print "Resp = %s"% testResp"""
+    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, data_format.XML)
+    print "Resp = %s"% testResp
     
     name = "new app3"
     tropoTest = TropoProvisioning(requestType="FORM-ENCODED")
-    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, "XML")
+    testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, data_format.FORM_ENCODED)
     print "Resp = %s"% testResp
     
 

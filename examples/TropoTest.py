@@ -22,7 +22,7 @@ class TropoTest(unittest.TestCase):
           "platform":"scripting", 
           "partition":"staging"}
             
-    def testCreateApplication(self):
+    def test_CreateApplication_successful(self):
         name = "new app1"
         voiceUrl = "http://website1.com"
         messagingUrl = "http://website1.com"
@@ -32,6 +32,30 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning()
         testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, data_format.JSON)
         print "Resp = %s"% testResp
+        result = testResp.find("failed")
+        self.assertEqual(result, -1)
+
+    def test_CreateApplication_failed(self):
+        name = "new app1"
+        voiceUrl = "http://website1.com"
+        messagingUrl = "http://website1.com"
+        platform = "scripting"
+        partition = "staging"
+        
+        tropoTest = TropoProvisioning()
+        testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, "data_format.JSON")
+        print "Resp = %s"% testResp
+        result = testResp.find("failed")
+        self.assertNotEqual(result, -1)
+
+    def test_AddInternationalNumber_successful(self):
+        applicationId = "430603"
+        prefix = 31
+        tropoTest = TropoProvisioning()
+        response = tropoTest.add_international_number_from_pool(applicationId, prefix, data_format.JSON)    
+        print "Response = %s"% response
+        
+        
             
 """    def testAddNumberFromPool(self):
         requestBody = {"type":"number", "prefix":"1407"}
@@ -58,21 +82,7 @@ class TropoTest(unittest.TestCase):
         tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
         tropoTest.add_tollFree_number(requestBody, applicationId)
 
-    def testAddInternationalNumber(self):
-        requestBody = {"type":"number", "prefix":"31"}
-        applicationId = "422445"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_international_number_from_pool(requestBody, applicationId)
 
-    def testAddIMAccount(self):
-        '''Not working. Getting 400 from Tropo. 
-           Need to enter a valid IM username and password.
-           IM application (gtalk, aim, yahoo etc) needs to give access to Tropo.
-        '''
-        requestBody = {"type":"gtalk", "username":"sumitk85", "password":""}
-        applicationId = "422445"
-        tropoTest = TropoProvisioning(TropoTest.USER_NAME, TropoTest.PASSWORD)
-        tropoTest.add_IM_account(requestBody, applicationId)
 
     def testAddVoiceToken(self):
         requestBody = { "type":"token", "channel":"voice"}
