@@ -13,7 +13,7 @@ def testCreateApplication(userName, password, url):
     platform = "scripting"
     partition = "staging"
     
-    tropoTest = TropoProvisioning()
+    tropoTest = TropoProvisioning(username="sumitk85", password="qazwsx123", url="https://api.tropo.com/v1/", requestType="FORM-ENCODED")
     testResp = tropoTest.create_application(name, voiceUrl, messagingUrl, platform, partition, data_format.JSON)
     print "Resp = %s"% testResp
     

@@ -7,9 +7,7 @@ import ConfigParser
 import TropoConnect
 import TropoException
 import data_format
-import json
 import os
-import sys
 import urllib
 
 __all__ = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'MyLibrary']
@@ -22,7 +20,7 @@ class TropoProvisioning(object):
     It defines a set of methods to create, update, retrieve or delete different kind of resources.
     '''
     
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs): 
         '''
         
         The object of this class can now be instantiated in two ways:
@@ -41,28 +39,30 @@ class TropoProvisioning(object):
         requestType can be one of these three - JSON, XML, FORM-ENCODED and defaults to JSON
         '''
        
-        config = ConfigParser.ConfigParser()
-        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.cfg')
-        config.read(config_path)
-        
-        if(kwargs.get('username') is None):
+        try:
+            config = ConfigParser.ConfigParser()
+            config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.cfg')
+            config.read(config_path)
+            
             self.userName = config.get('tropo_api_config', 'username')
-        else:
+            self.password = config.get('tropo_api_config', 'password')
+            self.url = config.get('tropo_api_config', 'url')
+            self.requestType = config.get('tropo_api_config', 'requestType')
+            
+        except ConfigParser.NoSectionError, (instance):
+            print "Exception Caught: %s" % instance
+            raise TropoException.ConfigFileMissingException("Config File is missing.")   
+        
+        if(kwargs.get('username') is not None):
             self.userName = kwargs.get('username')
         
-        if(kwargs.get('password') is None):
-            self.password = config.get('tropo_api_config', 'password')
-        else:
+        if(kwargs.get('password') is not None):
             self.password = kwargs.get('password')
             
-        if(kwargs.get('url') is None):
-            self.url = config.get('tropo_api_config', 'url')
-        else:
+        if(kwargs.get('url') is not None):
             self.url = kwargs.get('url')
         
-        if(kwargs.get('requestType') is None):
-            self.requestType = config.get('tropo_api_config', 'requestType')
-        else:
+        if(kwargs.get('requestType') is not None):
             self.requestType = kwargs.get('requestType')
         
         self.log_level = DEBUG
@@ -88,13 +88,13 @@ class TropoProvisioning(object):
             if (self.url is None) or (not self.url):
                 raise TropoException.UrlNotSetException("URL is not set")
         except TropoException.UserNameNotSetException, (instance):
-            print "Exception Caught: " + instance.parameter
+            self.tropo_logger_inst.logger(DEBUG, "Exception Caught: %s" % instance.parameter)
             raise instance
         except TropoException.PasswordNotSetException, (instance):
-            print "Exception Caught: " + instance.parameter
+            self.tropo_logger_inst.logger(DEBUG, "Exception Caught: %s" % instance.parameter)
             raise instance
         except TropoException.UrlNotSetException, (instance):
-            print "Exception Caught: " + instance.parameter
+            self.tropo_logger_inst.logger(DEBUG, "Exception Caught: %s" % instance.parameter)
             raise instance
 
     '''
@@ -125,7 +125,6 @@ class TropoProvisioning(object):
             
             if self.requestType == data_format.JSON:
                 postBody = {"token": token, "customerName": customerName, "numberToDial": numberToDial, "msg": msg}
-                print postBody
                 response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
             
             elif self.requestType == data_format.XML:
@@ -155,7 +154,6 @@ class TropoProvisioning(object):
         if (method == "GET"):
             params = urllib.urlencode({"token": token, "customerName": customerName, "numberToDial": numberToDial, "msg": msg})
             resource = resource + "?action=create&%s" % (params)
-            print resource
             response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
             
             self.tropo_logger_inst.logger(DEBUG, "ResponseCode = %s" % response[u'responseCode'])
@@ -193,7 +191,6 @@ class TropoProvisioning(object):
             
             if self.requestType == data_format.JSON:
                 postBody = {"token": token}
-                print postBody
                 response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
             
             elif self.requestType == data_format.XML:
@@ -222,7 +219,6 @@ class TropoProvisioning(object):
              
         if (method == "GET"):
             resource = resource + "?action=create&token=" + token
-            print resource
             response = TropoConnect.doGET(self.userName, self.password, resource, self.requestType)
             
             self.tropo_logger_inst.logger(DEBUG, "ResponseCode = %s" % response[u'responseCode'])
@@ -270,9 +266,7 @@ class TropoProvisioning(object):
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
         
         elif self.requestType == data_format.XML:
-            print "here"
             postBody = "<application><name>%s</name><voiceurl>%s</voiceurl><messagingurl>%s</messagingurl><platform>%s</platform><partition>%s</partition></application>" % (name, voiceUrl, messagingUrl, platform, partition)
-            print postBody
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
                              
         elif self.requestType == data_format.FORM_ENCODED:
@@ -473,7 +467,6 @@ class TropoProvisioning(object):
                              
         elif self.requestType == data_format.FORM_ENCODED:
             postBody = "type=number&prefix=%s" % (prefix) 
-            print postBody
             response = TropoConnect.doPOST(self.userName, self.password, resource, postBody, self.requestType)
         else:
             return "Bad request type."
@@ -668,7 +661,6 @@ class TropoProvisioning(object):
         
         if self.requestType == data_format.JSON:
             postBody = {"name": name, "platform": platform, "partition": partition}
-            print postBody
             response = TropoConnect.doPUT(self.userName, self.password, resource, postBody, self.requestType)
         
         elif self.requestType == data_format.XML:
